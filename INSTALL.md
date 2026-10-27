@@ -1,8 +1,13 @@
 # App Timer Root — Install Instructions
 
-Owner-controlled focus/timer tool for **rooted** Android devices with Magisk.
-It freezes selected apps (`pm disable-user` / `am force-stop`) for a duration
-you choose. It does **not** hide itself, resist uninstall, or auto-reinstall.
+Owner-controlled Android focus/timer tool for **rooted** devices with Magisk.
+
+Pick apps → set a duration → Start Lock. The app freezes those packages with
+root (`am force-stop` + `pm disable-user`). A Magisk late-start daemon
+re-applies the freeze across reboot / force-stop until the unlock epoch
+elapses. **No early-unlock button in the UI** — use the documented owner
+escape hatch instead. It does **not** hide itself, resist uninstall, or
+auto-reinstall.
 
 ## Prerequisites
 
@@ -39,25 +44,6 @@ anything until you start a lock from the app.
 
 There is **no early-unlock button** in the UI. The timer must elapse, or you
 use the **owner escape hatch** (see BYPASS-NOTES.md).
-
-## Building from source (optional)
-
-The project at `AppTimerRoot/` is a complete Android Studio / Gradle project.
-
-```bash
-cd AppTimerRoot
-# generates the throwaway keystore if missing:
-keytool -genkeypair -v -keystore apptimerroot-release.jks \
-  -alias apptimerroot -keyalg RSA -keysize 2048 -validity 10000 \
-  -storepass apptimerroot -keypass apptimerroot \
-  -dname "CN=App Timer Root, OU=Personal, O=Owner, L=NA, S=NA, C=US"
-./gradlew :app:assembleRelease
-# APK: app/build/outputs/apk/release/app-release.apk
-```
-
-Default signing passwords (throwaway keystore shipped for convenience):
-`storePassword=apptimerroot`, `keyAlias=apptimerroot`, `keyPassword=apptimerroot`.
-Replace the keystore before any real distribution.
 
 ## Uninstall / disable
 
