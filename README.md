@@ -29,7 +29,7 @@ Full steps: [INSTALL.md](INSTALL.md).
 ## Owner escape hatch (required safety)
 
 Remove the
-Magisk module or either reinstall or re-enable/unfreeze the app in app settings. Details: [BYPASS-NOTES.md](BYPASS-NOTES.md).
+Magisk module and either uninstall then reinstall or re-enable/unfreeze the app in app settings. Details: [BYPASS-NOTES.md](BYPASS-NOTES.md).
 
 ## License / intent
 
