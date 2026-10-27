@@ -7,6 +7,7 @@ package com.apptimerroot.lock
 enum class AppCategory(val label: String) {
     SOCIAL("Social"),
     STREAMING("Streaming"),
+    MUSIC("Music"),
     GAMES("Games"),
     BROWSERS("Browsers"),
     COMMUNICATION("Communication/Chat"),
@@ -37,28 +38,43 @@ object AppCategories {
             "club.beeper.android",
             "com.twitter.android.lite"
         ),
+        // Video / TV streaming only — music apps live under MUSIC.
         AppCategory.STREAMING to setOf(
             "com.google.android.youtube",
-            "com.google.android.apps.youtube.music",
             "tv.twitch.android.app",
             "com.netflix.mediaclient",
             "com.hulu.plus",
             "com.disney.disneyplus",
             "com.amazon.avod.thirdpartyclient", // Prime Video
-            "com.spotify.music",
-            "com.aspiro.tidal",
             "com.max.android", // Max / HBO
             "com.hbo.hbonow",
-            "com.apple.android.music",
-            "com.pandora.android",
-            "deezer.android.app",
-            "com.soundcloud.android",
             "com.crunchyroll.crunchyroid",
             "com.plexapp.android",
             "com.vudu.android",
             "com.peacocktv.peacockandroid",
             "com.wbd.stream",
-            "com.tubitv"
+            "com.tubitv",
+            "com.paramount.android.pplus",
+            "com.cbs.app"
+        ),
+        AppCategory.MUSIC to setOf(
+            "com.spotify.music",
+            "com.spotify.lite",
+            "com.apple.android.music",
+            "com.google.android.apps.youtube.music",
+            "com.amazon.mp3",
+            "com.pandora.android",
+            "com.soundcloud.android",
+            "com.aspiro.tidal",
+            "deezer.android.app",
+            "com.clearchannel.iheartradio.controller", // iHeartRadio
+            "com.audiomack",
+            "com.google.android.music", // Play Music (legacy)
+            "com.shazam.android",
+            "com.bandcamp.android",
+            "fm.castbox.audiobook.player",
+            "com.sec.android.app.music",
+            "com.samsung.android.app.music.chn"
         ),
         AppCategory.GAMES to setOf(
             "com.supercell.clashofclans",
@@ -130,7 +146,7 @@ object AppCategories {
             "com.bestbuy.android",
             "com.poshmark.app",
             "com.mercari",
-            "com.offerup",
+            "com.offerup"
         ),
         AppCategory.NEWS to setOf(
             "com.google.android.apps.magazines", // Google News
@@ -161,10 +177,17 @@ object AppCategories {
             "instagram", "facebook", "twitter", "tiktok", "snapchat",
             "linkedin", "pinterest", "threads", "bereal", "reddit"
         ),
+        // Video keywords only — music tokens moved to MUSIC.
+        // "youtube" matches plain YouTube; YouTube Music is in the known MUSIC set
+        // and also matches the "music" heuristic preferentially via known-list first.
         AppCategory.STREAMING to listOf(
-            "youtube", "netflix", "hulu", "disney", "spotify", "twitch",
-            "primevideo", "hbo", "peacock", "crunchyroll", "tidal", "pandora",
-            "soundcloud", "tubi"
+            "youtube", "netflix", "hulu", "disney", "twitch",
+            "primevideo", "hbo", "peacock", "crunchyroll", "tubi",
+            "paramount", "streaming"
+        ),
+        AppCategory.MUSIC to listOf(
+            "music", "spotify", "pandora", "soundcloud", "tidal",
+            "deezer", "iheartradio", "audiomack", "shazam", "bandcamp"
         ),
         AppCategory.GAMES to listOf(
             "game", "games", "gaming", "play.", "unity", "roblox",
@@ -194,7 +217,16 @@ object AppCategories {
         val pkg = packageName.lowercase()
         val name = label.lowercase()
         if (known[category]?.contains(packageName) == true) return true
-        // Exact-ish known entries sometimes differ by suffix; also check contains for short known tokens
+
+        // Prefer Music over Streaming when the name/pkg clearly indicates music
+        // (e.g. YouTube Music would otherwise match Streaming's "youtube" heuristic).
+        if (category == AppCategory.STREAMING) {
+            val musicKnown = known[AppCategory.MUSIC] ?: emptySet()
+            if (packageName in musicKnown) return false
+            val musicKeys = heuristics[AppCategory.MUSIC] ?: emptyList()
+            if (musicKeys.any { pkg.contains(it) || name.contains(it) }) return false
+        }
+
         val keys = heuristics[category] ?: emptyList()
         return keys.any { key ->
             pkg.contains(key) || name.contains(key)
