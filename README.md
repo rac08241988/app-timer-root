@@ -1,5 +1,7 @@
 # App Timer Root
 
+> ⚠️ **For personal self-control only.** Install this only on a device **you own**, to limit your **own** app use. Using it to lock, monitor, or restrict someone else's device — or any device without that person's knowledge and consent — is abusive, may be illegal, and is not a supported use of this project.
+
 Owner-controlled Android focus/timer tool for **rooted** devices with Magisk.
 
 Pick apps → set a duration → Start Lock. The app freezes those packages with
@@ -33,4 +35,5 @@ Magisk module and either uninstall then reinstall or re-enable/unfreeze the app 
 
 ## License / intent
 
-Personal owner-controlled focus tool. Install only on a device you own.
+**For personal self-control only.** Install only on a device you own, to manage
+your own focus. Not for controlling or monitoring anyone else's device.
