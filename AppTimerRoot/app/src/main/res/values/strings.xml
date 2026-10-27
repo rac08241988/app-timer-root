@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App Timer Root</string>
+    <string name="duration_label">Lock for (minutes):</string>
+    <string name="duration_hint">e.g. 60</string>
+    <string name="start_lock">Start Lock</string>
+    <string name="pick_apps">Pick apps to lock:</string>
+    <string name="status_idle">Status: idle — no active lock.</string>
+    <string name="status_working">Working…</string>
+    <string name="status_locked">Status: LOCKED — %1$d app(s), ~%2$d min remaining.</string>
+    <string name="status_released">Status: timer elapsed — apps released.</string>
+    <string name="lock_started">Lock started. Apps frozen until the timer elapses.</string>
+    <string name="err_duration">Enter a valid duration in minutes.</string>
+    <string name="err_no_apps">Select at least one app to lock.</string>
+    <string name="err_no_root">Root (su) not available. This tool requires root.</string>
+</resources>
