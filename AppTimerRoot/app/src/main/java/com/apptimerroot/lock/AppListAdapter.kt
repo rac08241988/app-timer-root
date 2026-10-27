@@ -51,4 +51,36 @@ class AppListAdapter(
         items.addAll(newItems)
         notifyDataSetChanged()
     }
+
+    /** Check every app whose package is in [packages]. */
+    fun checkPackages(packages: Set<String>) {
+        var changed = false
+        for (a in items) {
+            if (a.packageName in packages && !a.checked) {
+                a.checked = true
+                changed = true
+            }
+        }
+        if (changed) notifyDataSetChanged()
+    }
+
+    /**
+     * Uncheck apps in [packages] unless the package is also in [keepChecked]
+     * (claimed by another still-active category).
+     */
+    fun uncheckPackagesExcept(packages: Set<String>, keepChecked: Set<String>) {
+        var changed = false
+        for (a in items) {
+            if (a.packageName in packages &&
+                a.packageName !in keepChecked &&
+                a.checked
+            ) {
+                a.checked = false
+                changed = true
+            }
+        }
+        if (changed) notifyDataSetChanged()
+    }
+
+    fun allApps(): List<AppInfo> = items.toList()
 }

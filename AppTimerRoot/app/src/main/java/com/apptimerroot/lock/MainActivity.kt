@@ -1,6 +1,5 @@
 package com.apptimerroot.lock
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,6 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -20,6 +21,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusView: TextView
     private lateinit var durationInput: android.widget.EditText
     private lateinit var startButton: Button
+    private lateinit var categoryChips: ChipGroup
+
+    /** Currently toggled-on categories (multi-select). */
+    private val activeCategories = mutableSetOf<AppCategory>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +33,14 @@ class MainActivity : AppCompatActivity() {
         statusView = findViewById(R.id.status_text)
         durationInput = findViewById(R.id.duration_minutes)
         startButton = findViewById(R.id.start_button)
+        categoryChips = findViewById(R.id.category_chips)
 
         val rv: RecyclerView = findViewById(R.id.app_list)
         rv.layoutManager = LinearLayoutManager(this)
         adapter = AppListAdapter(mutableListOf())
         rv.adapter = adapter
 
+        buildCategoryChips()
         startButton.setOnClickListener { onStartLock() }
 
         refreshStatus()
@@ -43,6 +50,41 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshStatus()
+    }
+
+    private fun buildCategoryChips() {
+        categoryChips.removeAllViews()
+        for (cat in AppCategory.entries) {
+            val chip = Chip(this).apply {
+                text = cat.label
+                isCheckable = true
+                isChecked = false
+                tag = cat
+                setOnCheckedChangeListener { _, isChecked ->
+                    onCategoryToggled(cat, isChecked)
+                }
+            }
+            categoryChips.addView(chip)
+        }
+    }
+
+    private fun onCategoryToggled(category: AppCategory, enabled: Boolean) {
+        val apps = adapter.allApps()
+        if (apps.isEmpty()) return
+
+        val matched = AppCategories.matchingPackages(category, apps)
+
+        if (enabled) {
+            activeCategories.add(category)
+            adapter.checkPackages(matched)
+        } else {
+            activeCategories.remove(category)
+            // Keep apps still claimed by any remaining active category.
+            val keep = activeCategories
+                .flatMap { AppCategories.matchingPackages(it, apps) }
+                .toSet()
+            adapter.uncheckPackagesExcept(matched, keep)
+        }
     }
 
     private fun loadApps() {
@@ -61,7 +103,16 @@ class MainActivity : AppCompatActivity() {
                 }
                 .sortedBy { it.label.lowercase() }
                 .toList()
-            runOnUiThread { adapter.setItems(launchable) }
+            runOnUiThread {
+                adapter.setItems(launchable)
+                // Re-apply any already-active category selections after reload.
+                if (activeCategories.isNotEmpty()) {
+                    val keep = activeCategories
+                        .flatMap { AppCategories.matchingPackages(it, launchable) }
+                        .toSet()
+                    adapter.checkPackages(keep)
+                }
+            }
         }
     }
 
