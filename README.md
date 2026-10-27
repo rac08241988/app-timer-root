@@ -32,20 +32,8 @@ Full steps: [INSTALL.md](INSTALL.md).
 
 ## Owner escape hatch (required safety)
 
-While a lock is active, create this file as root:
-
-```text
-/data/adb/apptimerroot/UNLOCK_OVERRIDE
-```
-
-Via ADB:
-
-```bash
-adb shell su -c 'mkdir -p /data/adb/apptimerroot; touch /data/adb/apptimerroot/UNLOCK_OVERRIDE'
-```
-
-Or delete `/data/adb/apptimerroot/state.json` from recovery, or remove the
-Magisk module. Details: [BYPASS-NOTES.md](BYPASS-NOTES.md).
+Remove the
+Magisk module or either reinstall or re-enable/unfreeze the app in app settings. Details: [BYPASS-NOTES.md](BYPASS-NOTES.md).
 
 ## Build the APK
 
