@@ -1,5 +1,13 @@
 # App Timer Root — Bypass Notes & Owner Escape Hatch
 
+Owner-controlled Android focus/timer tool for **rooted** devices with Magisk.
+
+Pick apps → set a duration → Start Lock. The app freezes those packages with
+root (`am force-stop` + `pm disable-user`). A Magisk late-start daemon
+re-applies the freeze across reboot / force-stop until the unlock epoch
+elapses. **No early-unlock button in the UI** — use the documented owner
+escape hatch below instead.
+
 This tool is deliberately **not** malware and **not** anti-removal. A competent
 owner (or anyone with physical access + recovery/ADB) can always end the lock.
 That is by design.
