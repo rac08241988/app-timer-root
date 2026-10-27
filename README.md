@@ -17,10 +17,6 @@ escape hatch instead.
 | `INSTALL.md` | Install steps for the APK + Magisk module |
 | `BYPASS-NOTES.md` | Remaining bypasses **and the owner escape hatch** |
 
-The signed release APK is **not** in this repo (binary upload isn't supported
-via the tooling used to publish). Build it locally, or grab
-`AppTimerRoot-release.apk` from the local deliverable folder if you have it.
-
 ## Quick install
 
 1. install the module via Magisk → Modules → Install
@@ -34,17 +30,6 @@ Full steps: [INSTALL.md](INSTALL.md).
 
 Remove the
 Magisk module or either reinstall or re-enable/unfreeze the app in app settings. Details: [BYPASS-NOTES.md](BYPASS-NOTES.md).
-
-## Build the APK
-
-```bash
-cd AppTimerRoot
-# generate a throwaway keystore if you don't have one (see INSTALL.md)
-./gradlew :app:assembleRelease
-# → app/build/outputs/apk/release/app-release.apk
-```
-
-Requires Android SDK (compileSdk 34) and JDK 17+.
 
 ## License / intent
 
