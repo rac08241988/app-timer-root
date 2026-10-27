@@ -8,9 +8,6 @@ re-applies the freeze across reboot / force-stop until the unlock epoch
 elapses. **No early-unlock button in the UI** — use the documented owner
 escape hatch instead.
 
-This is deliberately **not** malware: it does **not** hide from the launcher
-or Settings, resist uninstall, auto-reinstall, or block recovery/ADB.
-
 ## Contents
 
 | Path | What |
@@ -26,10 +23,9 @@ via the tooling used to publish). Build it locally, or grab
 
 ## Quick install
 
-1. Zip the Magisk module directory (or use a prebuilt
-   `apptimerroot-magisk-module.zip`), install via Magisk → Modules → Install
-   from storage, then **reboot**.
-2. Build and install the APK (`./gradlew :app:assembleRelease` inside
+1. install the module via Magisk → Modules → Install
+    then reboot.
+2. install the APK (`./gradlew :app:assembleRelease` inside
    `AppTimerRoot/`), grant `su`.
 3. Open **App Timer Root**, check apps, enter minutes, tap **Start Lock**.
 
