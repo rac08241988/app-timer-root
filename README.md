@@ -25,8 +25,7 @@ via the tooling used to publish). Build it locally, or grab
 
 1. install the module via Magisk → Modules → Install
     then reboot.
-2. install the APK (`./gradlew :app:assembleRelease` inside
-   `AppTimerRoot/`), grant `su`.
+2. install the APK
 3. Open **App Timer Root**, check apps, enter minutes, tap **Start Lock**.
 
 Full steps: [INSTALL.md](INSTALL.md).
