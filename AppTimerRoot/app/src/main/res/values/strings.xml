@@ -5,6 +5,7 @@
     <string name="duration_hint">e.g. 60</string>
     <string name="start_lock">Start Lock</string>
     <string name="pick_apps">Pick apps to lock:</string>
+    <string name="categories_hint">Categories (multi-select):</string>
     <string name="status_idle">Status: idle — no active lock.</string>
     <string name="status_working">Working…</string>
     <string name="status_locked">Status: LOCKED — %1$d app(s), ~%2$d min remaining.</string>
