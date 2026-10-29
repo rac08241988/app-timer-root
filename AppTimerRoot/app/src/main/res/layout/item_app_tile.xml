@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Compact grid tile. Width/height and icon/text sizes are set at bind time
+     by AppListAdapter so that 6 columns x 8 rows fit the visible list area. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <LinearLayout
+        android:id="@+id/tile_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="2dp">
+
+        <ImageView
+            android:id="@+id/tile_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/tile_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/tile_check"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="top|end"
+        android:src="@drawable/ic_tile_check"
+        android:visibility="gone"
+        android:contentDescription="@null" />
+</FrameLayout>

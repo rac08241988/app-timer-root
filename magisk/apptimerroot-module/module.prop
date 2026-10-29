@@ -1,6 +1,6 @@
 id=apptimerroot
 name=App Timer Root
-version=v1.2
-versionCode=3
+version=v1.3
+versionCode=4
 author=Owner
 description=Owner-controlled app focus timer. Re-applies the app freeze on boot and restarts the lock daemon if killed, until the owner's timer elapses. Includes a documented owner escape hatch. Does NOT hide itself or resist uninstall.

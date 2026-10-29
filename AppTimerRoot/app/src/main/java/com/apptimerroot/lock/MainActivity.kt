@@ -1,13 +1,17 @@
 package com.apptimerroot.lock
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
@@ -22,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var durationInput: android.widget.EditText
     private lateinit var startButton: Button
     private lateinit var categoryChips: ChipGroup
+    private lateinit var appList: RecyclerView
+    private lateinit var viewModeToggle: ImageButton
 
     /** Currently toggled-on categories (multi-select). */
     private val activeCategories = mutableSetOf<AppCategory>()
@@ -35,10 +41,24 @@ class MainActivity : AppCompatActivity() {
         startButton = findViewById(R.id.start_button)
         categoryChips = findViewById(R.id.category_chips)
 
-        val rv: RecyclerView = findViewById(R.id.app_list)
-        rv.layoutManager = LinearLayoutManager(this)
+        appList = findViewById(R.id.app_list)
+        viewModeToggle = findViewById(R.id.view_mode_toggle)
         adapter = AppListAdapter(mutableListOf())
-        rv.adapter = adapter
+        appList.adapter = adapter
+
+        // Recompute grid tile size whenever the list area is (re)measured.
+        appList.addOnLayoutChangeListener { _, l, t, r, b, ol, ot, or_, ob ->
+            if (r - l != or_ - ol || b - t != ob - ot) appList.post { updateTileSize() }
+        }
+
+        applyViewMode(prefs().getBoolean(PREF_GRID_MODE, false))
+        viewModeToggle.setOnClickListener {
+            val grid = !adapter.gridMode
+            prefs().edit().putBoolean(PREF_GRID_MODE, grid).apply()
+            applyViewMode(grid)
+        }
+
+        findViewById<Button>(R.id.credit_button).setOnClickListener { openCreditLink() }
 
         buildCategoryChips()
         startButton.setOnClickListener { onStartLock() }
@@ -50,6 +70,42 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshStatus()
+    }
+
+    private fun prefs() = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
+    /** Switch between the default list and the 6-column tile grid. */
+    private fun applyViewMode(grid: Boolean) {
+        appList.layoutManager = if (grid) {
+            GridLayoutManager(this, AppListAdapter.GRID_COLUMNS)
+        } else {
+            LinearLayoutManager(this)
+        }
+        updateTileSize()
+        adapter.setGridMode(grid)
+        viewModeToggle.setImageResource(if (grid) R.drawable.ic_view_list else R.drawable.ic_view_grid)
+        viewModeToggle.contentDescription =
+            getString(if (grid) R.string.view_as_list else R.string.view_as_grid)
+    }
+
+    /** Tile = 1/6 of list width x 1/8 of list height, so 48 tiles fit per screen. */
+    private fun updateTileSize() {
+        val w = appList.width - appList.paddingLeft - appList.paddingRight
+        val h = appList.height - appList.paddingTop - appList.paddingBottom
+        if (w <= 0 || h <= 0) return
+        adapter.setTileSize(w / AppListAdapter.GRID_COLUMNS, h / AppListAdapter.GRID_ROWS)
+    }
+
+    private fun openCreditLink() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.credit_url)))
+            .addCategory(Intent.CATEGORY_BROWSABLE)
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.err_no_browser, Toast.LENGTH_SHORT).show()
+        } catch (e: SecurityException) {
+            Toast.makeText(this, R.string.err_no_browser, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun buildCategoryChips() {
@@ -187,5 +243,10 @@ class MainActivity : AppCompatActivity() {
             }
             runOnUiThread { statusView.text = text }
         }
+    }
+
+    companion object {
+        private const val PREFS_NAME = "ui_prefs"
+        private const val PREF_GRID_MODE = "grid_mode"
     }
 }

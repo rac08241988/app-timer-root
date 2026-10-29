@@ -14,4 +14,11 @@
     <string name="err_duration">Enter a valid duration in minutes.</string>
     <string name="err_no_apps">Select at least one app to lock.</string>
     <string name="err_no_root">Root (su) not available. This tool requires root.</string>
+    <string name="view_as_grid">Show apps as grid</string>
+    <string name="view_as_list">Show apps as list</string>
+    <string name="credit_made_by">Made by Rattlehead</string>
+    <string name="credit_see_more">See more of my software</string>
+    <string name="credit_url" translatable="false">https://github.com/rac08241988</string>
+    <string name="err_no_browser">No browser app found to open the link.</string>
+    <string name="tile_selected_desc">%1$s, selected</string>
 </resources>
